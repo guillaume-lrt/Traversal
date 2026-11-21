@@ -1,0 +1,27 @@
+# Virtual environments & Python caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.numba_cache/
+.coverage
+htmlcov/
+
+# Training artifacts, logs, and checkpoints
+.aim/
+runs/
+checkpoints/
+logs/
+*.pt
+*.pth
+*.npz
+*.tmp
+*.bak
+
+# IDE, OS, and scratch clutter
+.DS_Store
+.vscode/
+.idea/
+scratch/
