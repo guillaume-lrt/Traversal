@@ -1033,7 +1033,7 @@ class VisualizerSession:
                 agents.append(
                     {
                         "id": master_id,
-                        "label": f"AlphaZero ({rel_path}{it_str}) — 🧠 Master (256 sims) [{m_elo} Elo]",
+                        "label": f"AlphaZero ({rel_path}{it_str}) — Master (256 sims) [{m_elo} Elo]",
                         "kind": "alphazero",
                         "meta": meta,
                         "elo_rating": m_elo,
@@ -1052,7 +1052,7 @@ class VisualizerSession:
                 agents.append(
                     {
                         "id": standard_id,
-                        "label": f"AlphaZero ({rel_path}{it_str}) — ⚖️ Standard (96 sims) [{s_elo} Elo]",
+                        "label": f"AlphaZero ({rel_path}{it_str}) — Standard (96 sims) [{s_elo} Elo]",
                         "kind": "alphazero",
                         "meta": meta,
                         "elo_rating": s_elo,
@@ -1071,7 +1071,7 @@ class VisualizerSession:
                 agents.append(
                     {
                         "id": blitz_id,
-                        "label": f"AlphaZero ({rel_path}{it_str}) — ⚡ Blitz (32 sims) [{b_elo} Elo]",
+                        "label": f"AlphaZero ({rel_path}{it_str}) — Blitz (32 sims) [{b_elo} Elo]",
                         "kind": "alphazero",
                         "meta": meta,
                         "elo_rating": b_elo,
@@ -1088,7 +1088,7 @@ class VisualizerSession:
             agents.append(
                 {
                     "id": "heuristic:grandmaster",
-                    "label": f"Heuristic Baseline — 👑 Grandmaster (8-ply α-β) [{h_gm_elo} Elo]",
+                    "label": f"Heuristic — Grandmaster (8-ply α-β) [{h_gm_elo} Elo]",
                     "kind": "heuristic",
                     "elo_rating": h_gm_elo,
                     "games_played": self._get_agent_games_played("heuristic:grandmaster"),
@@ -1101,7 +1101,7 @@ class VisualizerSession:
             agents.append(
                 {
                     "id": "heuristic:master",
-                    "label": f"Heuristic Baseline — 🧠 Master (6-ply α-β) [{h_mas_elo} Elo]",
+                    "label": f"Heuristic — Master (6-ply α-β) [{h_mas_elo} Elo]",
                     "kind": "heuristic",
                     "elo_rating": h_mas_elo,
                     "games_played": self._get_agent_games_played("heuristic:master"),
@@ -1114,7 +1114,7 @@ class VisualizerSession:
             agents.append(
                 {
                     "id": "heuristic:standard",
-                    "label": f"Heuristic Baseline — ⚖️ Standard (4-ply α-β) [{h_std_elo} Elo]",
+                    "label": f"Heuristic — Standard (4-ply α-β) [{h_std_elo} Elo]",
                     "kind": "heuristic",
                     "elo_rating": h_std_elo,
                     "games_played": self._get_agent_games_played("heuristic:standard"),
@@ -1127,7 +1127,7 @@ class VisualizerSession:
             agents.append(
                 {
                     "id": "heuristic:blitz",
-                    "label": f"Heuristic Baseline — ⚡ Blitz (2-ply α-β) [{h_blitz_elo} Elo]",
+                    "label": f"Heuristic — Blitz (2-ply α-β) [{h_blitz_elo} Elo]",
                     "kind": "heuristic",
                     "elo_rating": h_blitz_elo,
                     "games_played": self._get_agent_games_played("heuristic:blitz"),
@@ -1671,16 +1671,16 @@ class VisualizerSession:
         base_id, var_key, _ = parse_agent_variant(agent_id)
         if var_key in ("ultra", "8ply", "grandmaster", "gm"):
             preset = HEURISTIC_PRESETS["grandmaster"]
-            var_label = "8-ply 👑 Grandmaster"
+            var_label = "8-ply Grandmaster"
         elif var_key in ("deep", "6ply", "master"):
             preset = HEURISTIC_PRESETS["master"]
-            var_label = "6-ply 🧠 Master"
+            var_label = "6-ply Master"
         elif var_key in ("fast", "2ply", "blitz"):
             preset = HEURISTIC_PRESETS["blitz"]
-            var_label = "2-ply ⚡ Blitz"
+            var_label = "2-ply Blitz"
         else:
             preset = HEURISTIC_PRESETS["standard"]
-            var_label = "4-ply ⚖️ Standard"
+            var_label = "4-ply Standard"
 
         depth = int(preset["depth"])
         root_beam = int(preset["root_beam"])
@@ -2222,6 +2222,16 @@ class VisualizerHTTPHandler(BaseHTTPRequestHandler):
         raw = self.rfile.read(length).decode("utf-8")
         return json.loads(raw) if raw else {}
 
+    def _send_file(self, filepath: str, content_type: str) -> None:
+        with open(filepath, "rb") as f:
+            content = f.read()
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(content)))
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+        self.wfile.write(content)
+
     def do_GET(self) -> None:
         assert SESSION is not None
         parsed = urlparse(self.path)
@@ -2230,13 +2240,30 @@ class VisualizerHTTPHandler(BaseHTTPRequestHandler):
             if not os.path.isfile(index_path):
                 self._send_json({"error": "static/index.html not found"}, status=404)
                 return
-            with open(index_path, "rb") as f:
-                content = f.read()
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(content)))
-            self.end_headers()
-            self.wfile.write(content)
+            self._send_file(index_path, "text/html; charset=utf-8")
+            return
+
+        if parsed.path.startswith("/static/"):
+            rel = parsed.path[len("/static/"):]
+            if not rel or "\x00" in rel:
+                self._send_json({"error": "Static asset not found"}, status=404)
+                return
+            real_root = os.path.realpath(STATIC_DIR)
+            real_target = os.path.realpath(os.path.join(real_root, rel))
+            if not real_target.startswith(real_root + os.sep) or not os.path.isfile(real_target):
+                self._send_json({"error": "Static asset not found"}, status=404)
+                return
+            ext = os.path.splitext(real_target)[1].lower()
+            mime_map = {
+                ".css": "text/css; charset=utf-8",
+                ".js": "application/javascript; charset=utf-8",
+                ".svg": "image/svg+xml",
+                ".json": "application/json; charset=utf-8",
+                ".html": "text/html; charset=utf-8",
+                ".png": "image/png",
+                ".ico": "image/x-icon",
+            }
+            self._send_file(real_target, mime_map.get(ext, "application/octet-stream"))
             return
 
         if parsed.path == "/api/state":

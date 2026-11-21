@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Version 2: Obsidian — Matte Neutral Carbon Dark Studio
+   Layout: Board-Left + Twin-Panel Right Studio (stage | left | right)
+   Zero blue-slate tint, zero neon glows, dense flat docked controls
+   ========================================================================== */
+
+:root {
+  --bg-app: #131312;
+  --bg-header: #191917;
+  --bg-panel: #1a1a18;
+  --bg-card: #22221f;
+  --bg-inset: #171715;
+  --bg-input: #171715;
+  --bg-hover: #2b2b27;
+  --bg-stage: #121210;
+  --bg-viewport: #121210;
+  --bg-overlay: rgba(26, 26, 24, 0.96);
+
+  --border: #2e2e2a;
+  --border-strong: #43433d;
+  --border-subtle: rgba(67, 67, 61, 0.45);
+
+  --text-strong: #f0ede4;
+  --text-main: #dad6cb;
+  --text-muted: #8f8b80;
+
+  --p1-color: #64a1d9;
+  --p2-color: #d9736a;
+
+  --accent-primary: #e4ded0;
+  --accent-primary-hover: #f2ede2;
+  --accent-primary-ink: #161614;
+  --accent-secondary: #a899d6;
+
+  --accent-gold: #d4a348;
+  --accent-gold-bg: rgba(212, 163, 72, 0.11);
+  --accent-gold-border: rgba(212, 163, 72, 0.42);
+  --accent-gold-ink: #161614;
+
+  --accent-green: #69b082;
+  --accent-green-bg: rgba(105, 176, 130, 0.11);
+  --accent-green-border: rgba(105, 176, 130, 0.40);
+
+  --danger: #dc6d64;
+  --danger-bg: rgba(220, 109, 100, 0.12);
+  --danger-border: rgba(220, 109, 100, 0.40);
+
+  --toggle-active-bg: rgba(100, 161, 217, 0.14);
+  --toggle-active-border: rgba(100, 161, 217, 0.50);
+  --toggle-active-ink: #8ec0ec;
+
+  --selected-chip-bg: rgba(212, 163, 72, 0.15);
+  --sim-accent: #d48a2c;
+  --sim-accent-ink: #161614;
+  --modal-backdrop: rgba(8, 8, 7, 0.72);
+
+  --kbd-bg: #262623;
+  --kbd-text: #c9c4b8;
+  --kbd-border: #3d3d37;
+  --kbd-shadow: #0d0d0c;
+  --kbd-radius: 3px;
+
+  --font-brand: var(--font-sans);
+  --font-score: var(--font-mono);
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --sidebar-gap: 8px;
+  --sidebar-pad: 9px;
+  --card-pad: 9px 10px;
+  --shadow-card: none;
+  --shadow-banner: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 22px 48px rgba(0, 0, 0, 0.68);
+}
+
+/* Distinct Board-Left + Twin-Panel Right Layout */
+.workspace {
+  grid-template-columns: 1fr 286px 312px;
+  grid-template-areas: "stage left right";
+}
+
+.board-stage {
+  border-right: 1px solid var(--border);
+}
+
+.sidebar {
+  border-right: 1px solid var(--border);
+}
+
+.sidebar.right {
+  border-left: none;
+}
+
+.card.p1-active {
+  border-color: var(--p1-color);
+  box-shadow: inset 0 2px 0 var(--p1-color);
+}
+
+.card.p2-active {
+  border-color: var(--p2-color);
+  box-shadow: inset 0 2px 0 var(--p2-color);
+}
+
+.stage-topbar {
+  padding: 6px 12px;
+}
+
+.dock-controls-row {
+  padding: 5px 10px;
+}
+
+.dock-legend-row {
+  padding: 3px 10px;
+  font-size: 10.5px;
+}
+
+/* Studio uses compact 8-point compass strip in dock */
+#viewpointSelect {
+  display: none;
+}
+
+.eval-bar-labels {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+}
